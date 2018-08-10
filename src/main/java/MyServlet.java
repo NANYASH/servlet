@@ -1,6 +1,7 @@
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,43 +14,34 @@ import java.io.IOException;
 public class MyServlet extends HttpServlet {
     private ItemController controller = new ItemController();
     private ObjectMapper mapper = new ObjectMapper();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             resp.getWriter().println(controller.findById(Long.parseLong(req.getParameter("param"))).toString());
-        } catch (InternalServerError internalServerError) {
-            resp.getWriter().println("Internal Server Error");
-            internalServerError.printStackTrace();
+        } catch (Exception e) {
+            resp.getWriter().println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            resp.getWriter().println("Save is done. "+controller.save(mapToItem(req)));
-        } catch (InternalServerError internalServerError) {
-            resp.getWriter().println("Internal Server Error");
-            internalServerError.printStackTrace();
+            resp.getWriter().println("Save is done. " + controller.save(mapToItem(req)));
+        } catch (Exception e) {
+            resp.getWriter().println(e.getMessage());
+            e.printStackTrace();
         }
 
     }
+
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            resp.getWriter().println("Update is done. "+controller.update(mapToItem(req)));
+            resp.getWriter().println("Update is done. " + controller.update(mapToItem(req)));
         } catch (Exception e) {
-            if (e instanceof BadRequestException) {
-                resp.getWriter().println("Bad Request Error");
-                e.printStackTrace();
-                return;
-            }
-            if (e instanceof InternalServerError) {
-                resp.getWriter().println("Internal Server Error");
-                e.printStackTrace();
-                return;
-            }
-
-            resp.getWriter().println("Unexpected error");
+            resp.getWriter().println(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -59,18 +51,15 @@ public class MyServlet extends HttpServlet {
         try {
             controller.delete(Long.parseLong(req.getParameter("itemId")));
             resp.getWriter().println("Item is deleted.");
-        } catch (InternalServerError e) {
-            resp.getWriter().println("Internal Server Error");
-            e.printStackTrace();
-        } catch (BadRequestException e) {
-            resp.getWriter().println("Bad Request Error");
+        } catch (Exception e) {
+            resp.getWriter().println(e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private Item mapToItem(HttpServletRequest req)throws IOException {
+    private Item mapToItem(HttpServletRequest req) throws IOException {
         JsonParser jsonParser = mapper.getFactory().createParser(req.getInputStream());
-        Item item = mapper.readValue(jsonParser,Item.class);
+        Item item = mapper.readValue(jsonParser, Item.class);
         System.out.println(item);
         return item;
     }
