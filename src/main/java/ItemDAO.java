@@ -68,20 +68,17 @@ public class ItemDAO {
     }
 
 
-    public Item findById(Class c, long id) throws InternalServerError {
+    public Item findById(Class c, long id) throws InternalServerError, BadRequestException {
         Item item;
         try(Session session = createSessionFactory().openSession()) {
             item = (session.get(Item.class, id));
             if (item!=null)return item;
             throw new BadRequestException("No items with such parameters");
         }catch (HibernateException e) {
-            System.err.println(c.getName()+" with such id \"" + id + "\" does not exist.");
+            System.err.println(c.getName() + " with such id \"" + id + "\" does not exist.");
             System.err.println(e.getMessage());
             throw new InternalServerError(e.getMessage());
-        } catch (BadRequestException e) {
-            e.printStackTrace();
         }
-        return null;
     }
 
     public static SessionFactory createSessionFactory(){

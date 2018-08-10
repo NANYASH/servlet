@@ -15,7 +15,7 @@ public class ItemService {
         itemDAO.delete(id);
     }
 
-    public Item findById(long id) throws InternalServerError {
+    public Item findById(long id) throws InternalServerError, BadRequestException {
        return itemDAO.findById(Item.class,id);
     }
 }

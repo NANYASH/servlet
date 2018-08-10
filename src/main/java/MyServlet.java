@@ -19,7 +19,7 @@ public class MyServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             resp.getWriter().println(controller.findById(Long.parseLong(req.getParameter("param"))).toString());
-        } catch (Exception e) {
+        } catch (BadRequestException | InternalServerError e) {
             resp.getWriter().println(e.getMessage());
             e.printStackTrace();
         }
@@ -29,7 +29,7 @@ public class MyServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             resp.getWriter().println("Save is done. " + controller.save(mapToItem(req)));
-        } catch (Exception e) {
+        } catch (InternalServerError e) {
             resp.getWriter().println(e.getMessage());
             e.printStackTrace();
         }
@@ -40,7 +40,7 @@ public class MyServlet extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             resp.getWriter().println("Update is done. " + controller.update(mapToItem(req)));
-        } catch (Exception e) {
+        } catch (BadRequestException | InternalServerError e) {
             resp.getWriter().println(e.getMessage());
             e.printStackTrace();
         }
@@ -51,7 +51,7 @@ public class MyServlet extends HttpServlet {
         try {
             controller.delete(Long.parseLong(req.getParameter("itemId")));
             resp.getWriter().println("Item is deleted.");
-        } catch (Exception e) {
+        } catch (BadRequestException | InternalServerError e) {
             resp.getWriter().println(e.getMessage());
             e.printStackTrace();
         }

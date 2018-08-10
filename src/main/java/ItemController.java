@@ -14,7 +14,7 @@ public class ItemController {
         itemService.delete(id);
     }
 
-    public Item findById(Long id) throws InternalServerError {
+    public Item findById(Long id) throws InternalServerError, BadRequestException {
         return itemService.findById(id);
     }
 }
